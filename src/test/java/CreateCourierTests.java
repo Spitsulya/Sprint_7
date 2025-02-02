@@ -12,6 +12,10 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class CreateCourierTests {
 
+private String jsonSuccess = "{\"login\": \"timonin\", \"password\": \"1234\", \"firstName\": \"elina\"}";
+private String jsonLogin = "{\"login\": \"timonin\", \"firstName\": \"elina\"}";
+private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"}";
+
     @Before
     public void setUp() {
         RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
@@ -22,9 +26,7 @@ public class CreateCourierTests {
     @Description("Positive test for POST request to /api/v1/courier endpoint by filling in all required fields")
     public void CreateCourierSucessfullyTest() {
 
-    String json = "{\"login\": \"timonin\", \"password\": \"1234\", \"firstName\": \"elina\"}";
-
-    Response response = createCourierPostRequest(json);
+    Response response = createCourierPostRequest(jsonSuccess);
     checkStatusCode201(response);
     checkResponseBody201(response);
     printResponseBodyToConsole(response);
@@ -34,12 +36,11 @@ public class CreateCourierTests {
     @DisplayName("Unsuccessful creation of two identical couriers")
     @Description("Negative test for POST request to /api/v1/courier endpoint by using the same courier's data")
     public void CreateTwoIdenticalCouriersImpossibleTest() {
-        String json = "{\"login\": \"timonin\", \"password\": \"1234\", \"firstName\": \"elina\"}";
 
-        Response response = createCourierPostRequest(json);
+        Response response = createCourierPostRequest(jsonSuccess);
         checkStatusCode201(response);
 
-        Response response1 = createCourierPostRequest(json);
+        Response response1 = createCourierPostRequest(jsonSuccess);
         checkStatusCode409(response1);
         checkResponseBody409(response1);
         printResponseBodyToConsole(response1);
@@ -49,9 +50,8 @@ public class CreateCourierTests {
     @DisplayName("Unsuccessful creation without couriers's login")
     @Description("Negative test for POST request to /api/v1/courier endpoint by not using all required fields")
     public void CreateCourierWithoutLoginImpossibleTest() {
-        String json = "{\"password\": \"1234\", \"firstName\": \"elina\"}";
 
-        Response response = createCourierPostRequest(json);
+        Response response = createCourierPostRequest(jsonPassword);
         checkStatusCode400(response);
         checkResponseBody400(response);
         printResponseBodyToConsole(response);
@@ -61,9 +61,8 @@ public class CreateCourierTests {
     @DisplayName("Unsuccessful creation without couriers's password")
     @Description("Negative test for POST request to /api/v1/courier endpoint by not using all required fields")
     public void CreateCourierWithoutPasswordImpossibleTest() {
-        String json = "{\"login\": \"timonin\", \"firstName\": \"elina\"}";
 
-        Response response = createCourierPostRequest(json);
+        Response response = createCourierPostRequest(jsonLogin);
         checkStatusCode400(response);
         checkResponseBody400(response);
         printResponseBodyToConsole(response);
@@ -72,15 +71,13 @@ public class CreateCourierTests {
 
     @After
     public void tearDown() {
-        // Шаг 1: Авторизация курьера и получение его ID
-        Integer courierId = authorizeAndGetCourierId("timonin", "1234");
 
-        // Шаг 2: Удаление курьера, если ID получен
-        if (courierId != null) {
+        int courierId = authorizeAndGetCourierId();
+
+        if (courierId != 0) {
             deleteCourier(courierId);
         }
     }
-
 
 
     @Step ("Courier creating with data {json}")
@@ -138,24 +135,25 @@ public class CreateCourierTests {
     }
 
     @Step("Courier authorization to receive ID, POST /api/v1/courier/login")
-    public Integer authorizeAndGetCourierId(String login, String password) {
+    public int authorizeAndGetCourierId() {
         Response loginResponse = given()
                 .header("Content-type", "application/json")
-                .body(String.format("{\"login\": \"%s\", \"password\": \"%s\"}", login, password))
+                .body(jsonSuccess)
                 .when()
                 .post("/api/v1/courier/login");
 
         if (loginResponse.statusCode() != 200) {
-            return null;
+            return 0;
         }
 
-        return loginResponse.then()
+        int courierId = loginResponse.then()
                 .extract()
                 .path("id");
+        return courierId;
     }
 
     @Step("Courier removing with ID and completing the test, DELETE /api/v1/courier/:id")
-    public void deleteCourier(Integer courierId) {
+    public void deleteCourier(int courierId) {
         given()
                 .header("Content-type", "application/json")
                 .when()
