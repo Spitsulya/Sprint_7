@@ -78,6 +78,8 @@ public class CreateOrderTests {
     private Response sendCreateOrderRequest(OrderRequest orderRequest) {
         Response response =
                 given()
+                     .log()
+                     .all()
                     .header("Content-type", "application/json")
                     .body(orderRequest)
                     .when()
@@ -88,6 +90,8 @@ public class CreateOrderTests {
     @Step("Check positive order creation response code (201 Created)")
     private void checkStatusCode201(Response response) {
         response.then()
+                .log()
+                .all()
                 .statusCode(201)
                 .body("track", notNullValue());
     }
@@ -108,11 +112,15 @@ public class CreateOrderTests {
     @Step("Order canceling and completing the test, PUT /api/v1/orders/cancel/ with params track")
     public void cancelOrder(int orderTrack) {
         given()
+                .log()
+                .all()
                 .header("Content-type", "application/json")
                 .when()
                 .queryParam("track", orderTrack)
                 .put("/api/v1/orders/cancel")
                 .then()
+                .log()
+                .all()
                 .statusCode(200);
     }
 }
