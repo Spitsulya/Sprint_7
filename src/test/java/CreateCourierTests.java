@@ -12,8 +12,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class CreateCourierTests {
 
-private String jsonSuccess = "{\"login\": \"timonin\", \"password\": \"1234\", \"firstName\": \"elina\"}";
-private String jsonLogin = "{\"login\": \"timonin\", \"firstName\": \"elina\"}";
+private String jsonSuccess = "{\"login\": \"spitsulya\", \"password\": \"1234\", \"firstName\": \"elina\"}";
+private String jsonLogin = "{\"login\": \"spitsulya\", \"firstName\": \"elina\"}";
 private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"}";
 
     @Before
@@ -85,6 +85,8 @@ private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"
 
         Response response =
                 given()
+                        .log()
+                        .all()
                         .header("Content-type", "application/json")
                         .body(json)
                         .when()
@@ -94,13 +96,13 @@ private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"
 
     @Step ("Check positive response code (201 Created)")
     public void checkStatusCode201(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(201);
     }
 
     @Step ("Check positive response message {ok: true}")
     public void checkResponseBody201(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("ok", equalTo(true));
     }
 
@@ -112,31 +114,33 @@ private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"
 
     @Step ("Check negative response code (409 Сonflict)")
     public void checkStatusCode409(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(409);
     }
 
     @Step ("Check negative response message {\"message\": \"Этот логин уже используется\"}")
     public void checkResponseBody409(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("message", equalTo("Этот логин уже используется"));
     }
 
     @Step ("Check negative response code (400 Bad Request)")
     public void checkStatusCode400(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(400);
     }
 
     @Step ("Check negative response message {\"message\": \"Недостаточно данных для создания учетной записи\"}")
     public void checkResponseBody400(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
     @Step("Courier authorization to receive ID, POST /api/v1/courier/login")
     public int authorizeAndGetCourierId() {
         Response loginResponse = given()
+                .log()
+                .all()
                 .header("Content-type", "application/json")
                 .body(jsonSuccess)
                 .when()
@@ -155,10 +159,14 @@ private String jsonPassword = "{\"password\": \"1234\", \"firstName\": \"elina\"
     @Step("Courier removing with ID and completing the test, DELETE /api/v1/courier/:id")
     public void deleteCourier(int courierId) {
         given()
+                .log()
+                .all()
                 .header("Content-type", "application/json")
                 .when()
                 .delete("/api/v1/courier/" + courierId)
                 .then()
+                .log()
+                .all()
                 .statusCode(200);
     }
 }
