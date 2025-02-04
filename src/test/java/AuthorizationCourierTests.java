@@ -84,6 +84,8 @@ public class AuthorizationCourierTests {
 
         Response response =
                 given()
+                        .log()
+                        .all()
                         .header("Content-type", "application/json")
                         .body(jsonSuccess)
                         .when()
@@ -96,6 +98,8 @@ public class AuthorizationCourierTests {
 
         Response response =
                 given()
+                        .log()
+                        .all()
                          .header("Content-type", "application/json")
                          .body(json)
                          .when()
@@ -105,7 +109,7 @@ public class AuthorizationCourierTests {
 
     @Step ("Check positive authorization response code (200)")
     public void checkStatusCode200(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(200);
     }
 
@@ -125,40 +129,44 @@ public class AuthorizationCourierTests {
     @Step("Courier removing with ID and completing the test, DELETE /api/v1/courier/:id")
     public void deleteCourier(int courierId) {
         given()
+                .log()
+                .all()
                 .header("Content-type", "application/json")
                 .when()
                 .delete("/api/v1/courier/" + courierId)
                 .then()
+                .log()
+                .all()
                 .statusCode(200);
     }
 
     @Step ("Check for courier ID in response")
     public void checkForIdAvailability(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("id", notNullValue());
     }
 
     @Step ("Check negative authorization response code (400 Bad Request)")
     public void checkStatusCode400(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(400);
     }
 
     @Step ("Check negative authorization response message {\"message\": \"Недостаточно данных для входа\"}")
     public void checkResponseBody400(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("message", equalTo("Недостаточно данных для входа"));
     }
 
     @Step ("Check negative authorization response code (404 Bad Request)")
     public void checkStatusCode404(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .statusCode(404);
     }
 
     @Step ("Check negative authorization response message {\"message\": \"Учетная запись не найдена\"}")
     public void checkResponseBody404(Response response) {
-        response.then().assertThat()
+        response.then().log().all().assertThat()
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 }
