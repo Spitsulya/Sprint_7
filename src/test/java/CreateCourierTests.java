@@ -14,12 +14,11 @@ import static org.hamcrest.Matchers.equalTo;
 public class CreateCourierTests {
 
     private CourierData courierData;
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
     private ScooterServiceClient client;
 
     @Before
     public void setUp() {
-        client = new ScooterServiceClient(BASE_URI);
+        client = new ScooterServiceClient();
     }
 
     @Test
@@ -27,7 +26,7 @@ public class CreateCourierTests {
     @Description("Positive test for POST request to /api/v1/courier endpoint by filling in all required fields")
     public void CreateCourierSucessfullyTest() {
 
-        courierData = new CourierData("leyfhslfsssss", "1234", "elina");
+        courierData = new CourierData("courierelina", "1234", "elina");
         ValidatableResponse response = client.createCourierPostRequest(courierData);
         checkStatusCode201(response);
         checkResponseBody201(response);
@@ -38,7 +37,7 @@ public class CreateCourierTests {
     @Description("Negative test for POST request to /api/v1/courier endpoint by using the same courier's data")
     public void CreateTwoIdenticalCouriersImpossibleTest() {
 
-        courierData = new CourierData("leylfsaakkныkal", "1234", "elina");
+        courierData = new CourierData("spitsynacourier", "1234", "elina");
 
         ValidatableResponse response = client.createCourierPostRequest(courierData);;
         checkStatusCode201(response);
@@ -64,7 +63,7 @@ public class CreateCourierTests {
     @Description("Negative test for POST request to /api/v1/courier endpoint by not using all required fields")
     public void CreateCourierWithoutPasswordImpossibleTest() {
 
-        courierData = new CourierData("apapsapa", "", "elina");
+        courierData = new CourierData("elinaelina", "", "elina");
 
         ValidatableResponse response = client.createCourierPostRequest(courierData);;
         checkStatusCode400(response);

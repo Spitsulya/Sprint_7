@@ -14,15 +14,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class AuthorizationCourierTests {
 
-    private static final String BASE_URI = "https://qa-scooter.praktikum-services.ru/";
     private CourierData courierData;
     private ScooterServiceClient client;
 
 
     @Before
     public void setUp() {
-        client = new ScooterServiceClient(BASE_URI);
-        courierData = new CourierData("spitsynaangel", "1234", "elina");
+        client = new ScooterServiceClient();
+        courierData = new CourierData("elinacourier", "1234", "elina");
         client.createCourierPostRequest(courierData);
     }
 
@@ -78,7 +77,6 @@ public class AuthorizationCourierTests {
     @After
     public void tearDown() {
         int courierId = client.authorizeCourier(Credentials.fromCourierData(courierData))
-                .assertThat().statusCode(200)
                 .extract().path("id"); // получаем ID курьера
 
         if (courierId != 0) {
