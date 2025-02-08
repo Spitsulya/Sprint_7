@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.apache.http.HttpStatus.SC_CREATED;
 
 
 @RunWith(Parameterized.class)
@@ -79,7 +80,7 @@ public class CreateOrderTests {
     private void checkStatusCode201(ValidatableResponse response) {
         response.log()
                 .all()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("track", notNullValue());
     }
 }

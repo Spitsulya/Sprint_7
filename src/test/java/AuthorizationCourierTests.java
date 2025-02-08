@@ -10,6 +10,7 @@ import client.ScooterServiceClient;
 import model.CourierData;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.apache.http.HttpStatus.*;
 
 
 public class AuthorizationCourierTests {
@@ -101,7 +102,7 @@ public class AuthorizationCourierTests {
     @Step("Check positive authorization response code (200)")
     public void checkStatusCode200(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
     }
 
     @Step ("Check for courier ID in response")
@@ -113,7 +114,7 @@ public class AuthorizationCourierTests {
     @Step ("Check negative authorization response code (400 Bad Request)")
     public void checkStatusCode400(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(400);
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @Step ("Check negative authorization response message {\"message\": \"Недостаточно данных для входа\"}")
@@ -122,10 +123,10 @@ public class AuthorizationCourierTests {
                 .body("message", equalTo("Недостаточно данных для входа"));
     }
 
-    @Step ("Check negative authorization response code (404 Bad Request)")
+    @Step ("Check negative authorization response code (404 Not Found)")
     public void checkStatusCode404(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(404);
+                .statusCode(SC_NOT_FOUND);
     }
 
     @Step ("Check negative authorization response message {\"message\": \"Учетная запись не найдена\"}")

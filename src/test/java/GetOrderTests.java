@@ -8,6 +8,7 @@ import org.junit.Test;
 import model.OrderData;
 import java.util.List;
 import static org.junit.Assert.assertFalse;
+import static org.apache.http.HttpStatus.SC_OK;
 
 
 public class GetOrderTests {
@@ -25,11 +26,17 @@ public class GetOrderTests {
     public void getOrderSuccseccfully () {
 
         ValidatableResponse response = client.getOrderList();
+        checkStatusCode200(response);
 
         List<OrderData> orders = extractOrderList(response);
         verifyOrderListIsNotEmpty(orders);
     }
 
+
+    @Step("Check positive order getting response code (200 OK)")
+    private void checkStatusCode200(ValidatableResponse response) {
+        response.statusCode(SC_OK);
+    }
 
     @Step("Extract the list of orders from the response")
     private List<OrderData> extractOrderList(ValidatableResponse response) {

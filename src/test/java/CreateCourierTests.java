@@ -9,6 +9,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import static org.hamcrest.Matchers.equalTo;
+import static org.apache.http.HttpStatus.*;
 
 
 public class CreateCourierTests {
@@ -92,7 +93,7 @@ public class CreateCourierTests {
     @Step ("Check positive response code (201 Created)")
     public void checkStatusCode201(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(201);
+                .statusCode(SC_CREATED);
     }
 
     @Step ("Check positive response message {ok: true}")
@@ -104,7 +105,7 @@ public class CreateCourierTests {
     @Step ("Check negative response code (409 Сonflict)")
     public void checkStatusCode409(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(409);
+                .statusCode(SC_CONFLICT);
     }
 
     @Step ("Check negative response message {\"message\": \"Этот логин уже используется\"}")
@@ -116,7 +117,7 @@ public class CreateCourierTests {
     @Step ("Check negative response code (400 Bad Request)")
     public void checkStatusCode400(ValidatableResponse response) {
         response.log().all().assertThat()
-                .statusCode(400);
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @Step ("Check negative response message {\"message\": \"Недостаточно данных для создания учетной записи\"}")
