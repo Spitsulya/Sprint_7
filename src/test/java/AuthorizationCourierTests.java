@@ -61,16 +61,28 @@ public class AuthorizationCourierTests {
         checkResponseBody400(response);
     }
 
-        @Test
+    @Test
     @DisplayName("Unsuccessful authorization with non-existent courier's data")
-    @Description("Negative test for POST request to /api/v1/courier/login endpoint by using non-existent courier's data")
-    public void AuthorizeCourierWithNonexistentDataTest() {
+    @Description("Negative test for POST request to /api/v1/courier/login endpoint by using invalid courier's login")
+    public void AuthorizeCourierWithInvalidLoginTest() {
 
-            Credentials credentials = Credentials.invalidData(courierData);
+            Credentials credentials = Credentials.invalidLogin(courierData);
             ValidatableResponse response = client.authorizeCourier(credentials);
 
             checkStatusCode404(response);
             checkResponseBody404(response);
+    }
+
+    @Test
+    @DisplayName("Unsuccessful authorization with non-existent courier's data")
+    @Description("Negative test for POST request to /api/v1/courier/login endpoint by using invalid courier's password")
+    public void AuthorizeCourierWithInvalidPasswordTest() {
+
+        Credentials credentials = Credentials.invalidPassword(courierData);
+        ValidatableResponse response = client.authorizeCourier(credentials);
+
+        checkStatusCode404(response);
+        checkResponseBody404(response);
     }
 
 

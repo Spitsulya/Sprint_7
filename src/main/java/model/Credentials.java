@@ -24,8 +24,13 @@ public class Credentials {
         return new Credentials(null, courierData.getPassword());
     }
 
-    // передаем несуществующие данные курьера
-    public static Credentials invalidData(CourierData courierData) {
-        return new Credentials("invalidLogin", "invalidPassword");
+    // передаем неверный логин
+    public static Credentials invalidLogin(CourierData courierData) {
+        return new Credentials("invalidLogin", courierData.getPassword());
+    }
+
+    // передаем неверный пароль
+    public static Credentials invalidPassword(CourierData courierData) {
+        return new Credentials(courierData.getLogin(), "invalidPassword");
     }
 }
